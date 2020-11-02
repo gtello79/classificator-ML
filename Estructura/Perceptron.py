@@ -1,4 +1,3 @@
-from layer import layer
 import numpy as np
 import math as m
 import copy as cp
@@ -12,7 +11,7 @@ class perceptron:
         # Valor del nodo
         self.valueState = 0.0
         #Nodos de la capa anterior 
-        self.lastLayer = cp.deepcopy(lastLayer.getLayerValue) 
+        self.lastLayer = None 
         #Pesos asignados con las neuronas de la capa anterior
         self.weight : weight
         #Vector auxiliar para pesos
@@ -70,5 +69,6 @@ class perceptron:
     def updateWeight(self):
         self.weight = self.auxWeight
     
-    def updateLastLayer(self, input):
-        self.lastLayer = input
+    #Se usa para identificar el vector de la capa anterior
+    def updateLastLayer(self, inputVector):
+        self.lastLayer = inputVector

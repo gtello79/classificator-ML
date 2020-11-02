@@ -15,7 +15,8 @@ def main():
     layerSize = 3
     nodesSize = [784,20,10]
     learningRate = 0.01
-    
 
     neuronalNet = red(layerSize,nodesSize)
-    
+    neuronalNet.training(instances, 2, learningRate)
+
+main()

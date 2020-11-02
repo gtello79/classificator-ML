@@ -1,14 +1,15 @@
-from Perceptron import perceptron
+from Estructura.Perceptron import perceptron
 import random as rd
 import numpy as np
 
 class layer:
     #Se inicia la clase capa
-    def __init__(self, idLayer, nodesSize, lastLayer):
+    def __init__(self, idLayer, nodesSize):
         #Id de la capa, para identificar si es capa oculta u otra
         self.idLayer = idLayer
+        
         #Copia de la capa anterior
-        self.lastLayer = lastLayer
+        self.lastLayer = None
         
         #Listado de nodos de la capa
         self.nodesList = list()
@@ -59,7 +60,7 @@ class layer:
             val.append( n.valueState )
         return np.array(val)
 
-    #Insertar un valor de entrada
-    def insertInput(self,input):
-        for i in range( len(input) ):
-            self.nodesList[i].updateLastLayer( input[i] )
+    #Insertar un vector de entrada
+    def insertInput(self,inputVector):
+        for i in range( len(inputVector) ):
+            self.nodesList[i].updateLastLayer( inputVector[i] )
