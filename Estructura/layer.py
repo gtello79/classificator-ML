@@ -9,43 +9,57 @@ class layer:
         self.idLayer = idLayer
         #Copia de la capa anterior
         self.lastLayer = lastLayer
+        
         #Listado de nodos de la capa
         self.nodesList = list()
-
+    
         #Se inicializa la capa
         self.initializeLayer(nodesSize)
+
 
     #Inicializacion de la capa
     def initializeLayer(self, nodesSize):
         nodes = list()
+        #Se agregan la cantidad de nodos asociada
         for n in range(nodesSize): 
             weight = self.initializeweight(nodesSize)
             node =  perceptron(self.lastLayer, weight, n)
             nodes.append(node) 
-
         self.nodesList = np.array(nodes)
+
+    #Calcula el valor de los nuevos pesos para cada nodo
+    def calculateNewWeight(self, learningRate, expectedValue, nextLayer = None):
+        for n in self.nodesList:
+            n.calculateNewWeight(learningRate, expectedValue, nextLayer)
+
+    def updateWeights(self):
+        for n in self.nodesList:
+            n.updateweights()
 
     #Se inicializan pesos aleatorios para un total de 'nodeSize'
     def initializeweight(self, nodesSize):
         #Se agregan los pesos random
         weight = list()
-        for w in range(nodesSize):
+        for i in range(nodesSize):
             x = rd.uniform(0,1)
             weight.append(x)
         #Retorna un vector con pesos aleatorioss
         return np.array( weight )
-    
 
     #Calcular el valor de cada nodo de la capa
     def evaluateLayer(self):
         for n in self.nodesList:
             n.calculateValue()
-        
+
     #Retorna un arreglo con el valor de todos los nodos    
     def getLayerValue(self):
         #Retorna el valor de la capa
         val = []
         for n in self.nodesList:
-            val.append(n.valueState)
-
+            val.append( n.valueState )
         return np.array(val)
+
+    #Insertar un valor de entrada
+    def insertInput(self,input):
+        for i in range( len(input) ):
+            self.nodesList[i].updateLastLayer( input[i] )

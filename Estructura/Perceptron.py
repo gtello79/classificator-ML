@@ -17,41 +17,58 @@ class perceptron:
         self.weight : weight
         #Vector auxiliar para pesos
         self.auxWeight: list()
-        #Vector neuronas next Layer
+        #Valor de delta
+        self.delta = 0
 
-    #Funcion de activacion
-    def activationFunction(self, x):
+    #Funcion de Sigmoidal
+    def SigmoidalFunction(self, x):
         return 1 / (1 + m.e**(-x))
-    
+
+    def activationFunction(self,x, type = None):
+        if type is None:
+            return self.SigmoidalFunction(x)
+        
     #Funcion derivada
     def derivateFunction(self, x):
         return self.activationFunction(x)*(1 - self.activationFunction(x))
 
-    
-    #Calculo del valor propio del perceptron
+    #Calculo del valor propio del perceptron (F)
     def calculateValue(self):
         sum = 0
         for i in range( len(self.lastLayer.nodeslist) ):
             sum += self.weight[i] * self.activationFunction(self.lastLayer.nodeslist[i])
-        self.valueState = sum
+        return sum
     
-
     #Calcula la nueva proporcion de los pesos
-    def calculateNewWeight(self, learningRate, expectedValue, id_layer):
-        delta = []
-        delta_i = 0
-        
+    def calculateNewWeight(self, learningRate, expectedValue, nextLayer):
+        newWeights = list()
+        x = self.calculateValue()
+        df = self.derivateFunction(x)
         #Si la capa del perceptron es una capa de salida
-        if(self.id_layer == id_layer):
-            for w in self.weight:
-                delta_i = (self.activationFunction(w) - expectedValue) * self.derivateFunction(w)
-                delta.append(delta_i)
-        else:
-        #Si no es capa de salida
-            for w in self.weight:
-                delta_i = (self.activationFunction(w) * w) * self.derivateFunction(w)
-                delta.append(delta_i)
+        if(nextLayer is None):
+            fx = self.activationFunction(x)
+            self.delta = (fx - expectedValue)*df
         
-        delta =  np.array(delta)
+        else:
+            #Si no es una capa output
+            delta = 0.0
+            nodesNextLayer = nextLayer.nodeslist
+            for i in range( len(nodesNextLayer) ):
+                node = nextLayer[i]
+                deltax += node.delta * node.weight[i]
+            self.delta = delta*df
+         
+        grad = self.delta * self.activationFunction(x)
+        
+        for i in range( len(self.weight)):
+            newWeight = self.weight[i] - learningRate*grad    
+            newWeights.append(newWeight)
 
+        self.auxWeight = np.array(newWeights)
+
+    #Funcion creada para actualizar los pesos de la red neuronal
+    def updateWeight(self):
+        self.weight = self.auxWeight
     
+    def updateLastLayer(self, input):
+        self.lastLayer = input
